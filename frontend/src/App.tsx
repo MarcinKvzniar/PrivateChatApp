@@ -7,6 +7,9 @@ import RegisterPage from './register/RegisterPage';
 import NotFoundPage from './NotFoundPage';
 import ChatList from './chats/ChatList';
 import Dialog from './chats/Dialog';
+import InvitePage from './pages/InvitePage';
+import RequestPage from './pages/RequestPage';
+import AnswerPage from './pages/AnswerPage';
 
 const App: React.FC = () => {
   // State to manage current page and selected chat
