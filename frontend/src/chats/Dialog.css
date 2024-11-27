@@ -1,0 +1,94 @@
+/* Centering and Desktop Styling */
+.dialog-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 800px; /* Restrict width for desktop */
+  margin: 0 auto; /* Center the content */
+  height: 100vh;
+  background: #f3f4f6;
+  color: #111827;
+  font-family: 'Roboto', sans-serif;
+  border: 1px solid #d1d5db; /* Optional border for clarity */
+  border-radius: 8px;
+}
+
+/* Header */
+.dialog-header {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: #1e40af;
+  color: white;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.chat-title {
+  margin: 0 auto;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.back-button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  opacity: 0.8;
+}
+
+/* Messages */
+.messages-container {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #e5e7eb;
+}
+
+.message-bubble {
+  max-width: 60%;
+  padding: 12px 16px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.user-message {
+  align-self: flex-end;
+  background: #3b82f6;
+  color: white;
+}
+
+.received-message {
+  align-self: flex-start;
+  background: #d1d5db;
+  color: #111827;
+}
+
+/* Input */
+.input-container {
+  display: flex;
+  padding: 16px;
+  background: #1e40af;
+}
+
+.message-input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+}
+
+.send-button {
+  background: #3b82f6;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  margin-left: 8px;
+  border-radius: 20px;
+  font-size: 1rem;
+}
