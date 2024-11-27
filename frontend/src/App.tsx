@@ -1,17 +1,26 @@
 import React from 'react';
-import InvitePage from './pages/InvitePage';
-import RequestPage from './pages/RequestPage';
-import AnswerPage from './pages/AnswerPage';
+import logo from './logo.svg';
+import './App.css';
 
-const App: React.FC = () => {
+function App() {
   return (
-    <div>
-      <h1>Private Chat App</h1>
-      <InvitePage />
-      <RequestPage />
-      <AnswerPage />
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
     </div>
   );
-};
+}
 
 export default App;
