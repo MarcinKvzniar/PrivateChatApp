@@ -1,25 +1,40 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../api/axiosInstance';
 
 const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleRegister = () => {
-    // registration logic here (e.g., send data to backend)
-    // Simulating successful registration:
-    const registrationSuccessful = true;
+  const handleRegister = async () => {
+    setMessage('');
+    setError('');
 
-    if (registrationSuccessful) {
-      setMessage('Registration successful! Redirecting to Login...');
-      // Redirect to the login page after 2 seconds
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
-    } else {
-      setMessage('Registration failed. Please try again.');
+    try {
+      const response = await axiosInstance.post('user/register/', {
+        username: username.trim(),
+        password,
+      });
+
+      if (response.status === 201) {
+        setMessage('Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
+      }
+    } catch (err: any) {
+      if (err.response) {
+        setError(
+          err.response.data.detail || 'Registration failed. Please try again.'
+        );
+      } else if (err.request) {
+        setError('No response from the server. Please try again.');
+      } else {
+        setError('An unexpected error occurred.');
+      }
     }
   };
 
@@ -43,7 +58,18 @@ const RegisterPage: React.FC = () => {
       <button className="login-button" onClick={handleRegister}>
         Register
       </button>
-      {message && <div>{message}</div>}
+      {message && <div className="success-message">{message}</div>}
+      {error && <div className="error-message">{error}</div>}
+
+      {/* Added Back to Login Link */}
+      <div className="links">
+        <p className="back-to-login">
+          Remembered you had an account and remembered password?{' '}
+          <a href="/login" className="back-to-login-link">
+            Back to Login
+          </a>
+        </p>
+      </div>
     </div>
   );
 };

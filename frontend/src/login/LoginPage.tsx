@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../api/axiosInstance';
 
 const LoginPage: React.FC = () => {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login validation - replace with API call
-    if (nickname === 'user' && password === 'password') {
-      console.log('Logged in');
-    } else {
-      setErrorMessage('Invalid username or password');
+    try {
+      const response = await axiosInstance.post('/api/user/login/', {
+        username: nickname,
+        password,
+      });
+      localStorage.setItem('access_token', response.data.access);
+      console.log('Login successful');
+    } catch (error: any) {
+      console.error('Error:', error);
+
+      if (error.response) {
+        setErrorMessage(error.response.data.detail || 'Login failed');
+      } else if (error.request) {
+        setErrorMessage('No response from the server. Please try again.');
+      } else {
+        setErrorMessage('An unexpected error occurred. Please try again.');
+      }
     }
   };
 
