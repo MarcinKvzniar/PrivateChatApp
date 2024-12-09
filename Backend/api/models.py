@@ -7,6 +7,7 @@ class FriendInvitation(models.Model):
 
     STATUS_CHOICES = [
         ('PENDING', 'PENDING'),
+        ('AWAITING_REVIEW', 'AWAITING_REVIEW'),
         ('ACCEPTED', 'ACCEPTED'),
         ('REJECTED', 'REJECTED'),
     ]
@@ -15,7 +16,8 @@ class FriendInvitation(models.Model):
     receiver = models.ForeignKey(User, related_name="received_invitations", on_delete=models.CASCADE)
     question = models.CharField(max_length=255)
     answer = models.CharField(max_length=255)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+    receiver_answer = models.CharField(max_length=255, blank=True, null=True)  
+    status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='PENDING')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
