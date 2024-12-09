@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 class FriendInvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendInvitation
-        fields = ['id', 'inviter', 'receiver', 'question', 'answer', 'status']
+        fields = ['id', 'inviter', 'receiver', 'question', 'status']
         read_only_fields = ['id', 'inviter', 'status']
 
     def create(self, validated_data):

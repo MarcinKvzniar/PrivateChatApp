@@ -46,9 +46,8 @@ class FriendInvitationView(APIView):
     def post(self, request):
         receiver_id = request.data.get('receiver')
         question = request.data.get('question')
-        answer = request.data.get('answer')
 
-        if receiver_id and question and answer:
+        if receiver_id and question:
             receiver = User.objects.filter(id=receiver_id).first()
             if not receiver:
                 return Response({'detail': 'Receiver not found.'}, status=status.HTTP_404_NOT_FOUND)
@@ -66,8 +65,7 @@ class FriendInvitationView(APIView):
             invitation = FriendInvitation(
                 inviter=request.user,
                 receiver=receiver,
-                question=question,
-                answer=answer
+                question=question
             )
             invitation.save()
             return Response({'detail': 'Invitation sent.'}, status=status.HTTP_201_CREATED)
@@ -77,9 +75,9 @@ class FriendInvitationView(APIView):
     # Respond to a friend invitation
     def put(self, request):
         invitation_id = request.data.get('invitation_id')
-        provided_answer = request.data.get('answer')
+        receiver_answer = request.data.get('answer')
 
-        if invitation_id and provided_answer:
+        if invitation_id and receiver_answer:
             invitation = FriendInvitation.objects.filter(id=invitation_id).first()
             if not invitation:
                 return Response({'detail': 'Invitation not found.'}, status=status.HTTP_404_NOT_FOUND)
@@ -87,14 +85,35 @@ class FriendInvitationView(APIView):
             if invitation.status != 'PENDING':
                 return Response({'detail': 'Invitation has already been responded to.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            if invitation.answer != provided_answer:
-                return Response({'detail': 'Incorrect answer.'}, status=status.HTTP_400_BAD_REQUEST)
-
-            invitation.status = 'ACCEPTED'
+            invitation.receiver_answer = receiver_answer
+            invitation.status = 'AWAITING_REVIEW'  
             invitation.save()
 
-            Friendship.objects.create(user1=request.user, user2=invitation.inviter)
+            return Response({'detail': 'Your answer has been submitted for review.'}, status=status.HTTP_200_OK)
 
-            return Response({'detail': 'Friend invitation accepted.'}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Inviter reviews and decides on the answer
+    def patch(self, request):
+        invitation_id = request.data.get('invitation_id')
+        action = request.data.get('action')  
+
+        if invitation_id and action in ['accept', 'reject']:
+            invitation = FriendInvitation.objects.filter(id=invitation_id, inviter=request.user).first()
+            if not invitation:
+                return Response({'detail': 'Invitation not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+            if invitation.status != 'AWAITING_REVIEW':
+                return Response({'detail': 'Invitation is not awaiting review.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            if action == 'accept':
+                invitation.status = 'ACCEPTED'
+                Friendship.objects.create(user1=invitation.inviter, user2=invitation.receiver)
+                Friendship.objects.create(user1=invitation.receiver, user2=invitation.inviter)
+            else:
+                invitation.status = 'REJECTED'
+
+            invitation.save()
+            return Response({'detail': f'Invitation {action}ed successfully.'}, status=status.HTTP_200_OK)
 
         return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
