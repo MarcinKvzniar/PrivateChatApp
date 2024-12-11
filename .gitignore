@@ -24,9 +24,6 @@ env/
 Pipfile.lock
 Pipfile
 
-# Migrations
-**/migrations/
-
 # Pytest
 .pytest_cache/
 .tox/
