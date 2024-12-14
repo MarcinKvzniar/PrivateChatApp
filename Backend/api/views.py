@@ -116,4 +116,4 @@ class FriendInvitationView(APIView):
             invitation.save()
             return Response({'detail': f'Invitation {action}ed successfully.'}, status=status.HTTP_200_OK)
 
-        return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST
+        return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
