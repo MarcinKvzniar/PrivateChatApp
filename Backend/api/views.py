@@ -44,16 +44,16 @@ class FriendInvitationView(APIView):
 
     # Create a new friend invitation 
     def post(self, request):
-        receiver_id = request.data.get('receiver')
+        receiver_username = request.data.get('receiver_username')  # Change here
         question = request.data.get('question')
 
-        if receiver_id and question:
-            receiver = User.objects.filter(id=receiver_id).first()
+        if receiver_username and question:
+            receiver = User.objects.filter(username=receiver_username).first()  # Query by username
             if not receiver:
                 return Response({'detail': 'Receiver not found.'}, status=status.HTTP_404_NOT_FOUND)
-            
+
             if receiver == request.user:
-                return Response({'detail': 'You cannot send invitation to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'detail': 'You cannot send an invitation to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
 
             existing_invitation = FriendInvitation.objects.filter(
                 inviter=request.user, receiver=receiver, status='PENDING'
