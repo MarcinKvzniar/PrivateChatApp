@@ -15,7 +15,6 @@ class FriendInvitation(models.Model):
     inviter = models.ForeignKey(User, related_name="sent_invitations", on_delete=models.CASCADE)
     receiver = models.ForeignKey(User, related_name="received_invitations", on_delete=models.CASCADE)
     question = models.CharField(max_length=255)
-    answer = models.CharField(max_length=255)
     receiver_answer = models.CharField(max_length=255, blank=True, null=True)  
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='PENDING')
 
@@ -35,4 +34,4 @@ class Friendship(models.Model):
         unique_together = ['user1', 'user2']
 
     def __str__(self):
-        return f"{self.user1} is now friends with {self.user2}"
+        return f"{self.user1} is now friends with {self.user2}."

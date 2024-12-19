@@ -44,16 +44,19 @@ class FriendInvitationView(APIView):
 
     # Create a new friend invitation 
     def post(self, request):
-        receiver_username = request.data.get('receiver_username')  # Change here
+        receiver_username = request.data.get('receiver_username')  
         question = request.data.get('question')
 
         if receiver_username and question:
-            receiver = User.objects.filter(username=receiver_username).first()  # Query by username
+            receiver = User.objects.filter(username=receiver_username).first()  
             if not receiver:
                 return Response({'detail': 'Receiver not found.'}, status=status.HTTP_404_NOT_FOUND)
 
             if receiver == request.user:
                 return Response({'detail': 'You cannot send an invitation to yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if Friendship.objects.filter(user1=request.user, user2=receiver).exists():
+                return Response({'detail': 'You are already friends with this user.'}, status=status.HTTP_400_BAD_REQUEST)
 
             existing_invitation = FriendInvitation.objects.filter(
                 inviter=request.user, receiver=receiver, status='PENDING'
@@ -93,10 +96,10 @@ class FriendInvitationView(APIView):
 
         return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
     
-    # Inviter reviews and decides on the answer
+    # Accept or reject a friend invitation
     def patch(self, request):
         invitation_id = request.data.get('invitation_id')
-        action = request.data.get('action')  
+        action = request.data.get('action') 
 
         if invitation_id and action in ['accept', 'reject']:
             invitation = FriendInvitation.objects.filter(id=invitation_id, inviter=request.user).first()
@@ -108,12 +111,19 @@ class FriendInvitationView(APIView):
 
             if action == 'accept':
                 invitation.status = 'ACCEPTED'
-                Friendship.objects.create(user1=invitation.inviter, user2=invitation.receiver)
-                Friendship.objects.create(user1=invitation.receiver, user2=invitation.inviter)
-            else:
-                invitation.status = 'REJECTED'
+                invitation.save()
 
-            invitation.save()
-            return Response({'detail': f'Invitation {action}ed successfully.'}, status=status.HTTP_200_OK)
+                friendship1 = Friendship.objects.create(user1=invitation.inviter, user2=invitation.receiver)
+                friendship2 = Friendship.objects.create(user1=invitation.receiver, user2=invitation.inviter)
+                
+                return Response({
+                    'detail': 'Friendship created successfully.',
+                    'friendship_ids': [friendship1.id, friendship2.id]
+                }, status=status.HTTP_200_OK)
+            
+            elif action == 'reject':
+                invitation.status = 'REJECTED'
+                invitation.save()
+                return Response({'detail': 'Friendship invitation rejected.'}, status=status.HTTP_200_OK)
 
         return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
