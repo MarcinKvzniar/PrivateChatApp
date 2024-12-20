@@ -71,6 +71,11 @@ class FriendInvitationView(APIView):
             return Response({'detail': 'Invitation sent.'}, status=status.HTTP_201_CREATED)
 
         return Response({'detail': 'Invalid data.'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        invitations = FriendInvitation.objects.filter(receiver=request.user).order_by('-created_at')
+        serializer = FriendInvitationSerializer(invitations, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     # Respond to a friend invitation
     def put(self, request):

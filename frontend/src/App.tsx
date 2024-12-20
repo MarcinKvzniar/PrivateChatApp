@@ -7,6 +7,7 @@ import RegisterPage from './register/RegisterPage';
 import NotFoundPage from './NotFoundPage';
 import ChatList from './chats/ChatList';
 import Dialog from './chats/Dialog';
+import Invite from './chats/Invite';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<'chatList' | 'dialog'>(
@@ -43,6 +44,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/invite" element={<Invite />} />
 
           <Route
             path="/chats"

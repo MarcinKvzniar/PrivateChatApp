@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axiosInstance from '../api/axiosInstance'; // Import your Axios instance
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../api/axiosInstance';
 
 type ChatListProps = {
   openChat: (chat: { id: string; name: string }) => void;
@@ -8,6 +9,7 @@ type ChatListProps = {
 const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
   const [chats, setChats] = useState<{ id: string; name: string }[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
 
   // Fetch chats from the backend
   useEffect(() => {
@@ -17,7 +19,7 @@ const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
         if (accessToken) {
           const response = await axiosInstance.get('/user/chats/', {
             headers: {
-              Authorization: `Bearer ${accessToken}`, // Add the token to the header
+              Authorization: `Bearer ${accessToken}`,
             },
           });
           setChats(response.data);
@@ -36,7 +38,8 @@ const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
   return (
     <div>
       <h1>Chat List</h1>
-      {errorMessage && <p>{errorMessage}</p>}
+      {errorMessage && <p className="error">{errorMessage}</p>}
+
       <ul>
         {chats.length === 0 ? (
           <p>No chats available</p>
@@ -48,6 +51,8 @@ const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
           ))
         )}
       </ul>
+
+      <button onClick={() => navigate('/invite')}>Go to Invite Page</button>
     </div>
   );
 };

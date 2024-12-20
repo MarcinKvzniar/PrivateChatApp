@@ -1,0 +1,112 @@
+.invite-page {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #f5f5f5;
+  background-color: #2c2c2c;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: #ff4c4c;
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: #4caf50;
+  margin-bottom: 10px;
+}
+
+.invite-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.invite-button:hover {
+  background-color: #45a049;
+}
+
+.invite-list {
+  list-style: none;
+  padding: 0;
+}
+
+.invite-item {
+  background-color: #3e3e3e;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 5px;
+  max-width: 300px;
+  color: #f5f5f5;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #3e3e3e;
+  color: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+  text-align: left;
+}
+
+.input-field,
+.textarea-field {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.send-button,
+.cancel-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.send-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.send-button:hover {
+  background-color: #45a049;
+}
+
+.cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f;
+}
