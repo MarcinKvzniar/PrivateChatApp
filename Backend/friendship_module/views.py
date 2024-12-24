@@ -106,3 +106,14 @@ class FriendInvitationView(APIView):
                 return Response({'detail': 'Friendship invitation rejected.'}, status=status.HTTP_200_OK)
 
         return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PendingInvitationsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        pending_invitations_recieved = list(FriendInvitation.objects.filter( receiver=request.user))
+        pending_invitations_sent = list(FriendInvitation.objects.filter(inviter=request.user))
+
+        serializer = FriendInvitationSerializer(pending_invitations_recieved+pending_invitations_sent, many=True)
+        return Response(serializer.data)
