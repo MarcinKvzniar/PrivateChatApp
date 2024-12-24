@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.urls import path, include
-from api.views import CreateUserView, LoginView, FriendInvitationView
+from api.views import CreateUserView, LoginView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from chat.views import ChatListCreateView, MessageListCreateView
+from friendship_module.views import FriendInvitationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
