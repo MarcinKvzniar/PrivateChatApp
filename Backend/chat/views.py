@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from .models import Chat, Message
 from .serializers import MessageSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.db.models import Q
 
 
 class ChatListCreateView(generics.ListCreateAPIView):
@@ -83,3 +84,14 @@ class MessageListCreateView(generics.ListCreateAPIView):
         else:
             ic(f"User {user.username} does NOT have permission to send messages in chat {chat_id}")
             raise PermissionDenied('User is not a member of this chat.')
+
+
+
+class AvailableChatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        chats = Chat.objects.filter(Q(creator=user) | Q(members=user))
+        serializer = ChatSerializer(chats, many=True)
+        return Response(serializer.data)
