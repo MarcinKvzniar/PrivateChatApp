@@ -26,7 +26,7 @@ class ChatListCreateView(generics.ListCreateAPIView):
         serializer.save(creator=user)
 
 
-# views.py
+
 class AddMemberView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -40,9 +40,7 @@ class AddMemberView(APIView):
             user = User.objects.get(username=username)
             ic(f"Adding user {username} to chat {chat_id}")
             chat.members.add(user)
-            chat.save()  # Ensure the changes are saved
-
-            # Retrieve the user to ensure they were added successfully
+            chat.save()
             added_user = chat.members.get(username=username)
             ic(f"User {username} added to chat {chat_id}")
 
@@ -92,6 +90,7 @@ class AvailableChatsView(APIView):
 
     def get(self, request):
         user = request.user
-        chats = Chat.objects.filter(Q(creator=user) | Q(members=user))
+        # chats = Chat.objects.filter(Q(creator=user) | Q(members=user))
+        chats = Chat.objects.filter(Q(creator=user)) # that depends if
         serializer = ChatSerializer(chats, many=True)
         return Response(serializer.data)
