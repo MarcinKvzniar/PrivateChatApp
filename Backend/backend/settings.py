@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'chat',
+    'friendship_module',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
