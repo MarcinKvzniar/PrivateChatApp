@@ -8,7 +8,9 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from .models import FriendInvitation, Friendship
-from .serializers import FriendInvitationSerializer
+from .serializers import FriendInvitationSerializer, FriendshipSerializer
+
+
 # Create your views here.
 
 class FriendInvitationView(APIView):
@@ -92,12 +94,11 @@ class FriendInvitationView(APIView):
                 invitation.status = 'ACCEPTED'
                 invitation.save()
 
-                friendship1 = Friendship.objects.create(user1=invitation.inviter, user2=invitation.receiver)
-                friendship2 = Friendship.objects.create(user1=invitation.receiver, user2=invitation.inviter)
+                friendship = Friendship.objects.create(user1=invitation.inviter, user2=invitation.receiver)
 
                 return Response({
                     'detail': 'Friendship created successfully.',
-                    'friendship_ids': [friendship1.id, friendship2.id]
+                    'friendship_id': friendship.id
                 }, status=status.HTTP_200_OK)
 
             elif action == 'reject':
@@ -116,4 +117,14 @@ class PendingInvitationsView(APIView):
         pending_invitations_sent = list(FriendInvitation.objects.filter(inviter=request.user))
 
         serializer = FriendInvitationSerializer(pending_invitations_recieved+pending_invitations_sent, many=True)
+        return Response(serializer.data)
+
+
+class AvailableFriendshipsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        friendships = Friendship.objects.filter(user1=request.user) | Friendship.objects.filter(user2=request.user)
+
+        serializer = FriendshipSerializer(friendships, many=True)
         return Response(serializer.data)

@@ -23,3 +23,15 @@ class FriendInvitationSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
+from rest_framework import serializers
+from .models import Friendship
+
+class FriendshipSerializer(serializers.ModelSerializer):
+    user1_username = serializers.CharField(source='user1.username', read_only=True)
+    user2_username = serializers.CharField(source='user2.username', read_only=True)
+
+    class Meta:
+        model = Friendship
+        fields = ['user1_username', 'user2_username', 'created_at']
+        read_only_fields = ['user1_username', 'user2_username', 'created_at']
+
