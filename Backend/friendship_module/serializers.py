@@ -11,8 +11,11 @@ class FriendInvitationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FriendInvitation
-        fields = ['id', 'inviter_username', 'question', 'status']
+        fields = ['id', 'inviter_username', 'question', 'receiver_answer', 'status']
         read_only_fields = ['id', 'inviter_username', 'status']
+
+    def get_receiver_answer(self, obj):
+        return obj.receiver_answer if obj.receiver_answer else None
 
     def create(self, validated_data):
         validated_data['inviter'] = self.context['request'].user
