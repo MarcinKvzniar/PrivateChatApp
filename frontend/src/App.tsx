@@ -7,12 +7,9 @@ import RegisterPage from './register/RegisterPage';
 import NotFoundPage from './NotFoundPage';
 import ChatList from './chats/ChatList';
 import Dialog from './chats/Dialog';
-import InvitePage from './pages/InvitePage';
-import RequestPage from './pages/RequestPage';
-import AnswerPage from './pages/AnswerPage';
+import Invite from './chats/Invite';
 
 const App: React.FC = () => {
-  // State to manage current page and selected chat
   const [currentPage, setCurrentPage] = useState<'chatList' | 'dialog'>(
     'chatList'
   );
@@ -20,25 +17,21 @@ const App: React.FC = () => {
     id: string;
     name: string;
   } | null>(null);
-
-  // Simulating user authentication (use actual login check in your app)
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // just a simulation
-    const user = localStorage.getItem('user');
-    if (user) {
+    // Check if the user is authenticated by checking the access token in localStorage
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
       setIsAuthenticated(true);
     }
   }, []);
 
-  // Function to open a chat and go to the dialog
   const openChat = (chat: { id: string; name: string }) => {
     setSelectedChat(chat);
     setCurrentPage('dialog');
   };
 
-  // Function to go back to the chat list
   const goBack = () => {
     setCurrentPage('chatList');
   };
@@ -47,13 +40,12 @@ const App: React.FC = () => {
     <BrowserRouter>
       <div className="App">
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<LoginPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/invite" element={<Invite />} />
 
-          {/* Protect chat routes with authentication check */}
           <Route
             path="/chats"
             element={
@@ -77,7 +69,6 @@ const App: React.FC = () => {
             />
           )}
 
-          {/* Not Found route */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
