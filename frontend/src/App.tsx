@@ -1,25 +1,78 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
+import LoginPage from './login/LoginPage';
+import ForgotPassword from './forgot-password/ForgotPassword';
+import RegisterPage from './register/RegisterPage';
+import NotFoundPage from './NotFoundPage';
+import ChatList from './chats/ChatList';
+import Dialog from './chats/Dialog';
+import Invite from './chats/Invite';
 
-function App() {
+const App: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState<'chatList' | 'dialog'>(
+    'chatList'
+  );
+  const [selectedChat, setSelectedChat] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if the user is authenticated by checking the access token in localStorage
+    const accessToken = localStorage.getItem('access_token');
+    if (accessToken) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const openChat = (chat: { id: string; name: string }) => {
+    setSelectedChat(chat);
+    setCurrentPage('dialog');
+  };
+
+  const goBack = () => {
+    setCurrentPage('chatList');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/invite" element={<Invite />} />
+
+          <Route
+            path="/chats"
+            element={
+              isAuthenticated ? (
+                <ChatList openChat={openChat} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          {currentPage === 'dialog' && selectedChat && (
+            <Route
+              path={`/chats/${selectedChat.id}`}
+              element={
+                isAuthenticated ? (
+                  <Dialog chat={selectedChat} goBack={goBack} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+          )}
+
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

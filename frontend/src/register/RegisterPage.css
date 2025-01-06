@@ -1,0 +1,17 @@
+.back-to-login {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #9f9d9d;
+  text-align: center;
+}
+
+.back-to-login-link {
+  color: #729aff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.back-to-login-link:hover {
+  text-decoration: underline;
+  color: #a5c9ff;
+}

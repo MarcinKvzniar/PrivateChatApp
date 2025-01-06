@@ -33,4 +33,3 @@ class LoginView(TokenObtainPairView):
 
         return response
 
-
