@@ -20,7 +20,6 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if the user is authenticated by checking the access token in localStorage
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
       setIsAuthenticated(true);

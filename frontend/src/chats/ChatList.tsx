@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axiosInstance';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
-type ChatListProps = {
+interface Chat {
+  chat_id: string;
+  chat_name: string;
+}
+
+interface ChatListProps {
   openChat: (chat: { id: string; name: string }) => void;
-};
+}
 
 const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
-  const [chats, setChats] = useState<{ id: string; name: string }[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
+  const [chats, setChats] = useState<Chat[]>([]);
+  const navigate = useNavigate(); // Initialize the navigation function
 
-  // Fetch chats from the backend
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const accessToken = localStorage.getItem('access_token');
-        if (accessToken) {
-          const response = await axiosInstance.get('/user/chats/', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          setChats(response.data);
-        } else {
-          setErrorMessage('No access token found.');
-        }
+        const response = await fetch('http://127.0.0.1:8000/friendships/', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
+        const data = await response.json();
+        setChats(data);
       } catch (error) {
         console.error('Error fetching chats:', error);
-        setErrorMessage('Failed to load chats.');
       }
     };
 
@@ -37,22 +34,32 @@ const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
 
   return (
     <div>
-      <h1>Chat List</h1>
-      {errorMessage && <p className="error">{errorMessage}</p>}
-
+      <h2>Your Chats</h2>
       <ul>
-        {chats.length === 0 ? (
-          <p>No chats available</p>
-        ) : (
-          chats.map((chat) => (
-            <li key={chat.id} onClick={() => openChat(chat)}>
-              {chat.name}
-            </li>
-          ))
-        )}
+        {chats.map((chat) => (
+          <li
+            key={chat.chat_id}
+            onClick={() => openChat({ id: chat.chat_id, name: chat.chat_name })}
+          >
+            {chat.chat_name}
+          </li>
+        ))}
       </ul>
-
-      <button onClick={() => navigate('/invite')}>Go to Invite Page</button>
+      {/* Button to navigate to the Invite page */}
+      <button
+        onClick={() => navigate('/invite')}
+        style={{
+          marginTop: '20px',
+          padding: '10px 15px',
+          backgroundColor: '#574caf',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        Invites
+      </button>
     </div>
   );
 };
