@@ -20,15 +20,14 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if the user is authenticated by checking the access token in localStorage
     const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
       setIsAuthenticated(true);
     }
   }, []);
 
-  const openChat = (chat: { id: string; name: string }) => {
-    setSelectedChat(chat);
+  const openChat = (chat: { chat_id: string; chat_name: string }) => {
+    setSelectedChat({ id: chat.chat_id, name: chat.chat_name });
     setCurrentPage('dialog');
   };
 
@@ -74,6 +73,6 @@ const App: React.FC = () => {
       </div>
     </BrowserRouter>
   );
-}
+};
 
 export default App;

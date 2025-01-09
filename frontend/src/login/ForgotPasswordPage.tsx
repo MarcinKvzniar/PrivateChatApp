@@ -6,7 +6,6 @@ const ForgotPassword: React.FC = () => {
 
   const handlePasswordReset = (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for sending reset password link (mock example)
     console.log('Password reset link sent to', email);
   };
 
