@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import FriendInvitation
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import FriendInvitation
 
 class FriendInvitationSerializer(serializers.ModelSerializer):
     inviter_username = serializers.CharField(source='inviter.username', read_only=True)

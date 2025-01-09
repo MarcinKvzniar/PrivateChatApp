@@ -11,10 +11,6 @@ from .models import FriendInvitation, Friendship
 from .serializers import FriendInvitationSerializer, FriendshipSerializer
 from rest_framework.decorators import api_view
 
-
-# Create your views here.
-
-
 @api_view(['GET'])
 def current_user(request):
     """
@@ -23,7 +19,6 @@ def current_user(request):
     if request.user.is_authenticated:
         return Response({"username": request.user.username})
     return Response({"error": "Unauthorized"}, status=401)
-
 
 
 class FriendInvitationView(APIView):

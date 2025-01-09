@@ -10,5 +10,4 @@ urlpatterns = [
     path('chats/<int:chat_id>/add_member/', AddMemberView.as_view(), name='add-member'),
     path('chats/available/', AvailableChatsView.as_view(), name='available-chats'),
     path('user/chats/', UserChatsView.as_view(), name='user-chats'),
-
 ]
