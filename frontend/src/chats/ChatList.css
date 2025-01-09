@@ -1,0 +1,53 @@
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.chat-item {
+  border: 1px solid #dcdcdc;
+  padding: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chat-item:hover {
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.invite-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background: linear-gradient(
+    45deg,
+    #f06,
+    #ff9e00
+  ); /* Gradient from pink to orange */
+  border: none;
+  border-radius: 50px; /* Makes the button round */
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.invite-button:hover {
+  background: linear-gradient(
+    45deg,
+    #ff9e00,
+    #f06
+  ); /* Inverted gradient on hover */
+}
+
+.chat-item h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.chat-item ul {
+  list-style: none;
+  padding: 0;
+}
