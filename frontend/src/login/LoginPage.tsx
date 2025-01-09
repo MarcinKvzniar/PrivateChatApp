@@ -8,7 +8,7 @@ const LoginPage: React.FC = () => {
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ const LoginPage: React.FC = () => {
         localStorage.setItem('refresh_token', response.data.refresh);
 
         console.log('Login successful');
-        navigate('/chats'); // Redirect to the chats page
+        navigate('/chats'); 
       } else {
         setErrorMessage('Login failed: No token received.');
       }

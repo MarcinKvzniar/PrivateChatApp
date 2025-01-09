@@ -32,6 +32,10 @@ class LoginView(TokenObtainPairView):
             return Response({'detail': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return response
+    
+
+
+    
 """
 class FriendInvitationView(APIView):
 

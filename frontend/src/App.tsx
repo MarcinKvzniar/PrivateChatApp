@@ -26,8 +26,8 @@ const App: React.FC = () => {
     }
   }, []);
 
-  const openChat = (chat: { id: string; name: string }) => {
-    setSelectedChat(chat);
+  const openChat = (chat: { chat_id: string; chat_name: string }) => {
+    setSelectedChat({ id: chat.chat_id, name: chat.chat_name });
     setCurrentPage('dialog');
   };
 
@@ -73,6 +73,6 @@ const App: React.FC = () => {
       </div>
     </BrowserRouter>
   );
-}
+};
 
 export default App;
