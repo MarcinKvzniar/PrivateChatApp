@@ -1,9 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import FriendInvitation
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import FriendInvitation
 
 class FriendInvitationSerializer(serializers.ModelSerializer):
     inviter_username = serializers.CharField(source='inviter.username', read_only=True)
@@ -37,4 +34,3 @@ class FriendshipSerializer(serializers.ModelSerializer):
         model = Friendship
         fields = ['user1_username', 'user2_username', 'created_at']
         read_only_fields = ['user1_username', 'user2_username', 'created_at']
-

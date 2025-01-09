@@ -1,58 +1,102 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../api/axiosInstance';
 
-type ChatListProps = {
-  openChat: (chat: { id: string; name: string }) => void;
+type Chat = {
+  chat_id: string;
+  chat_name: string;
 };
 
-const ChatList: React.FC<ChatListProps> = ({ openChat }) => {
-  const [chats, setChats] = useState<{ id: string; name: string }[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const navigate = useNavigate();
+const ChatList = ({ openChat }: { openChat: (chat: Chat) => void }) => {
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Hook to navigate
 
-  // Fetch chats from the backend
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const accessToken = localStorage.getItem('access_token');
-        if (accessToken) {
-          const response = await axiosInstance.get('/user/chats/', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          setChats(response.data);
-        } else {
-          setErrorMessage('No access token found.');
+        let token = localStorage.getItem('access_token');
+        if (!token) {
+          setError('You are not authenticated.');
+          return;
         }
-      } catch (error) {
-        console.error('Error fetching chats:', error);
-        setErrorMessage('Failed to load chats.');
+
+        try {
+          const response = await axios.get(
+            'http://localhost:8000/api/chats/available/',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setChats(response.data);
+        } catch (err: any) {
+          // If token is invalid/expired, attempt to refresh it
+          if (err.response && err.response.status === 401) {
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (!refreshToken) {
+              setError('No refresh token found. Please log in again.');
+              return;
+            }
+
+            const refreshResponse = await axios.post(
+              'http://localhost:8000/api/token/refresh/',
+              {
+                refresh: refreshToken,
+              }
+            );
+            token = refreshResponse.data.access;
+
+            if (token) {
+              localStorage.setItem('access_token', token);
+
+              // Retry fetching the chats with the new token
+              const retryResponse = await axios.get(
+                'http://localhost:8000/api/chats/available/',
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              setChats(retryResponse.data);
+            } else {
+              setError('Failed to refresh token.');
+            }
+          } else {
+            setError('Failed to load chats.');
+          }
+        }
+      } catch (err) {
+        setError('Failed to load chats.');
+        console.error(err);
       }
     };
 
     fetchChats();
   }, []);
 
+  // Navigate to invite page
+  const handleInviteClick = () => {
+    navigate('/invite');
+  };
+
   return (
     <div>
-      <h1>Chat List</h1>
-      {errorMessage && <p className="error">{errorMessage}</p>}
-
+      <h1>Chats</h1>
+      {error && <p>{error}</p>}
       <ul>
-        {chats.length === 0 ? (
-          <p>No chats available</p>
-        ) : (
-          chats.map((chat) => (
-            <li key={chat.id} onClick={() => openChat(chat)}>
-              {chat.name}
-            </li>
-          ))
-        )}
+        {chats.map((chat) => (
+          <li key={chat.chat_id} onClick={() => openChat(chat)}>
+            {chat.chat_name}
+          </li>
+        ))}
       </ul>
-
-      <button onClick={() => navigate('/invite')}>Go to Invite Page</button>
+      <button className="invite-button" onClick={handleInviteClick}>
+        Invitations
+      </button>{' '}
+      {/* Invite Button */}
     </div>
   );
 };

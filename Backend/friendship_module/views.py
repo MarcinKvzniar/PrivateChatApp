@@ -9,9 +9,17 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from .models import FriendInvitation, Friendship
 from .serializers import FriendInvitationSerializer, FriendshipSerializer
+from rest_framework.decorators import api_view
 
+@api_view(['GET'])
+def current_user(request):
+    """
+    API endpoint to get the currently logged-in user's username.
+    """
+    if request.user.is_authenticated:
+        return Response({"username": request.user.username})
+    return Response({"error": "Unauthorized"}, status=401)
 
-# Create your views here.
 
 class FriendInvitationView(APIView):
     """

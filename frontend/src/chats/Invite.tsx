@@ -1,145 +1,239 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import './Invite.css';
 
 interface Invitation {
-  id: string;
-  receiver_username: string;
+  id: number;
+  inviter_username?: string;
+  receiver_username?: string;
   question: string;
-  status: string; // 'pending', 'accepted', etc.
+  receiver_answer?: string | null;
+  status: string;
 }
 
-const InvitesPage: React.FC = () => {
-  const [receiverUsername, setReceiverUsername] = useState<string>('');
-  const [question, setQuestion] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+interface ErrorResponse {
+  detail?: string;
+}
+
+const InvitationPage = () => {
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
+  const [newInvitation, setNewInvitation] = useState({
+    username: '',
+    question: '',
+  });
 
-  // Fetch all invitations when the page loads
-  useEffect(() => {
-    const fetchInvitations = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/invite/', {
+  const fetchCurrentUser = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+
+      const response = await axios.get(
+        'http://127.0.0.1:8000/api/current-user/',
+        {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            Authorization: `Bearer ${token}`,
           },
-        });
-        setInvitations(response.data); // Set invitations to state
-      } catch (error) {
-        setMessage('Failed to load invitations.');
-      }
-    };
-
-    fetchInvitations();
-  }, []);
-
-  const handleReceiverUsernameChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setReceiverUsername(e.target.value);
-  };
-
-  const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuestion(e.target.value);
-  };
-
-  const handleSendInvitation = async () => {
-    if (!receiverUsername || !question) {
-      setMessage('Please fill in both fields.');
-      return;
+        }
+      );
+      setCurrentUser(response.data.username);
+    } catch (error) {
+      console.error('Error fetching current user:', error);
     }
+  };
 
-    setIsLoading(true);
-    setMessage('');
+  const fetchInvitations = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        alert('You must be logged in to access this page.');
+        return;
+      }
+
+      const response = await axios.get(
+        'http://127.0.0.1:8000/pending-invitations/',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setInvitations(response.data);
+    } catch (error) {
+      console.error('Error fetching invitations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendInvitation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { username, question } = newInvitation;
 
     try {
-      // Send a POST request to create the invitation
+      const token = localStorage.getItem('access_token');
       const response = await axios.post(
-        'http://localhost:8000/api/invite/',
-        {
-          receiver_username: receiverUsername,
-          question: question,
-        },
+        'http://127.0.0.1:8000/api/invite/',
+        { receiver_username: username, question },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         }
       );
 
-      setMessage('Invitation sent successfully!');
-
-      // Fetch updated invitations list
-      const updatedInvitations = await axios.get(
-        'http://localhost:8000/api/invitations/',
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        }
-      );
-      setInvitations(updatedInvitations.data); // Update list
+      alert(response.data.detail);
+      setNewInvitation({ username: '', question: '' });
+      fetchInvitations();
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setMessage(error.response?.data.detail || 'Something went wrong.');
-      } else {
-        setMessage('An error occurred.');
-      }
-    } finally {
-      setIsLoading(false);
+      const axiosError = error as AxiosError<ErrorResponse>;
+      alert(axiosError.response?.data?.detail || 'Error sending invitation.');
     }
   };
 
+  const handleSubmitAnswer = async (invitationId: number, answer: string) => {
+    try {
+      const token = localStorage.getItem('access_token');
+      await axios.put(
+        'http://127.0.0.1:8000/api/invite/',
+        { invitation_id: invitationId, answer },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert('Answer submitted successfully.');
+      fetchInvitations();
+    } catch (error) {
+      console.error('Error submitting answer:', error);
+      alert('Failed to submit answer.');
+    }
+  };
+
+  const handleAction = async (invitationId: number, action: string) => {
+    try {
+      const token = localStorage.getItem('access_token');
+      await axios.patch(
+        'http://127.0.0.1:8000/api/invite/',
+        { invitation_id: invitationId, action },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert('Action performed successfully.');
+      fetchInvitations();
+    } catch (error) {
+      console.error('Error performing action:', error);
+      alert('Failed to perform action.');
+    }
+  };
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchInvitations();
+    }
+  }, [currentUser]);
+
   return (
-    <div className="invites-page">
-      <h2>Invite a Friend</h2>
+    <div className="invitation-page">
+      <h1>Invitation Page</h1>
 
-      {/* Invitation Form */}
-      <div>
-        <label htmlFor="receiver-username">Receiver's Username:</label>
-        <input
-          type="text"
-          id="receiver-username"
-          value={receiverUsername}
-          onChange={handleReceiverUsernameChange}
-        />
-      </div>
+      <div className="invitation-container">
+        <div className="send-invitation">
+          <h2>Send an Invitation</h2>
+          <form onSubmit={handleSendInvitation}>
+            <input
+              type="text"
+              placeholder="Username"
+              value={newInvitation.username}
+              onChange={(e) =>
+                setNewInvitation({ ...newInvitation, username: e.target.value })
+              }
+            />
+            <textarea
+              placeholder="Question"
+              value={newInvitation.question}
+              onChange={(e) =>
+                setNewInvitation({ ...newInvitation, question: e.target.value })
+              }
+            ></textarea>
+            <button type="submit">Send</button>
+          </form>
+        </div>
 
-      <div>
-        <label htmlFor="question">Question:</label>
-        <input
-          type="text"
-          id="question"
-          value={question}
-          onChange={handleQuestionChange}
-        />
-      </div>
+        <div className="all-invitations">
+          <h2>All Invitations</h2>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            invitations.map((inv) => (
+              <div key={inv.id} className="invitation">
+                <p>
+                  <strong>From:</strong> {inv.inviter_username}{' '}
+                  <strong>To:</strong> {inv.receiver_username}
+                </p>
+                <p>
+                  <strong>Question:</strong> {inv.question}
+                </p>
+                <p>
+                  <strong>Status:</strong> {inv.status}
+                </p>
 
-      <button onClick={handleSendInvitation} disabled={isLoading}>
-        {isLoading ? 'Sending...' : 'Send Invitation'}
-      </button>
+                {inv.status === 'PENDING' &&
+                  currentUser === inv.receiver_username && (
+                    <div>
+                      <textarea
+                        placeholder="Write your answer..."
+                        value={answers[inv.id] || ''}
+                        onChange={(e) =>
+                          setAnswers({ ...answers, [inv.id]: e.target.value })
+                        }
+                      ></textarea>
+                      <button
+                        onClick={() =>
+                          handleSubmitAnswer(inv.id, answers[inv.id])
+                        }
+                      >
+                        Submit Answer
+                      </button>
+                    </div>
+                  )}
 
-      {message && <p>{message}</p>}
-
-      {/* List of Invitations */}
-      <h3>Sent Invitations</h3>
-      <div>
-        {invitations.length === 0 ? (
-          <p>No invitations sent yet.</p>
-        ) : (
-          <ul>
-            {invitations.map((invite) => (
-              <li key={invite.id}>
-                <strong>To: {invite.receiver_username}</strong>
-                <p>Question: {invite.question}</p>
-                <p>Status: {invite.status}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+                {inv.status === 'AWAITING_REVIEW' &&
+                  currentUser === inv.inviter_username && (
+                    <div>
+                      <p>
+                        <strong>Answer:</strong> {inv.receiver_answer}
+                      </p>
+                      <button onClick={() => handleAction(inv.id, 'accept')}>
+                        Accept
+                      </button>
+                      <button onClick={() => handleAction(inv.id, 'reject')}>
+                        Reject
+                      </button>
+                    </div>
+                  )}
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export default InvitesPage;
+export default InvitationPage;
