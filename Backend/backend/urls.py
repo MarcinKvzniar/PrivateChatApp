@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from friendship_module.views import current_user
 from chat.views import ChatListCreateView, MessageListCreateView
 from friendship_module.views import FriendInvitationView, PendingInvitationsView, AvailableFriendshipsView
+from chat.routing import websocket_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,8 +15,10 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='refresh'),
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('chat.urls')),
+    path('ws/', include(websocket_urlpatterns)),
     path('api/invite/', FriendInvitationView.as_view(), name='invite'),
     path('pending-invitations/', PendingInvitationsView.as_view(), name='pending-invitations'),
     path('friendships/', AvailableFriendshipsView.as_view(), name='friendships'),
     path('api/current-user/', current_user, name='current_user'),
+
 ]
