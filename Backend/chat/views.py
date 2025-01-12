@@ -15,6 +15,15 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.db.models import Q
 
 
+class UserChatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        chats = Chat.objects.filter(members=user).distinct()
+        serializer = ChatSerializer(chats, many=True)
+        return Response(serializer.data)
+
 class ChatListCreateView(generics.ListCreateAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer

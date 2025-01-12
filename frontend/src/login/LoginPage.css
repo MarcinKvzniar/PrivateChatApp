@@ -1,0 +1,114 @@
+body {
+  background-color: #121212;
+  color: white;
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-container {
+  background-color: #1f1f1f;
+  padding: 40px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.login-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #333;
+  border: 1px solid #444;
+  color: white;
+  border-radius: 4px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.links {
+  margin-top: 20px;
+}
+
+.register-link,
+.forgot-password-link {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.register-link:hover,
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  background: linear-gradient(45deg, #0721c9db, #95c4edc8);
+  padding: 12px 24px;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-size: 16px;
+  background-size: 400% 400%;
+  animation: gradientMove 5s ease infinite;
+  opacity: 0.9;
+}
+
+.login-button:hover {
+  background: linear-gradient(45deg, #033bb572);
+  opacity: 1;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.reset-button {
+  width: auto;
+  padding: 10px 20px;
+  margin-top: 10px;
+}
+
+.return-button {
+  display: inline-block; /* Make it look like a button */
+  width: auto; /* Same width as reset button */
+  padding: 10px 20px;
+  background: linear-gradient(45deg, #0721c9db, #95c4edc8);
+  color: white;
+  text-align: center;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 10px;
+}
+
+.return-button:hover {
+  background: linear-gradient(45deg, #033bb572);
+  opacity: 1;
+}
