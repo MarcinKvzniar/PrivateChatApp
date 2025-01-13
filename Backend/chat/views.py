@@ -103,3 +103,26 @@ class AvailableChatsView(APIView):
         chats = Chat.objects.filter(Q(creator=user)) # that depends if
         serializer = ChatSerializer(chats, many=True)
         return Response(serializer.data)
+
+
+# CHANNELS WEBSOCKET FOR CHAT_FINAL_JOIN
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .models import ChatRoom
+
+class ChatRoomCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        room_name = request.data.get('room_name')
+        if not room_name:
+            return Response({'error': 'Room name is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        chat_room, created = ChatRoom.objects.get_or_create(name=room_name, creator=request.user)
+        if created:
+            return Response({'message': 'Chat room created successfully'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({'message': 'Chat room already exists'}, status=status.HTTP_200_OK)

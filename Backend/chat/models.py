@@ -17,3 +17,17 @@ class Message(models.Model):
     sender = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)
     content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
+
+
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class ChatRoom(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    creator = models.ForeignKey(User, related_name='created_chat_rooms', on_delete=models.CASCADE)
+    members = models.ManyToManyField(User, related_name='chat_rooms')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
