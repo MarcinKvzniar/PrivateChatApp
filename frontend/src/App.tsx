@@ -11,13 +11,6 @@ import Invite from './chats/Invite';
 import CreateRoom from './chats/CreateRoom';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<'chatList' | 'dialog'>(
-    'chatList'
-  );
-  const [selectedChat, setSelectedChat] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -26,15 +19,6 @@ const App: React.FC = () => {
       setIsAuthenticated(true);
     }
   }, []);
-
-  const openChat = (chat: { chat_id: string; chat_name: string }) => {
-    setSelectedChat({ id: chat.chat_id, name: chat.chat_name });
-    setCurrentPage('dialog');
-  };
-
-  const goBack = () => {
-    setCurrentPage('chatList');
-  };
 
   return (
     <BrowserRouter>
@@ -55,26 +39,13 @@ const App: React.FC = () => {
 
           <Route
             path="/chats"
-            element={
-              isAuthenticated ? (
-                <ChatList openChat={openChat} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
+            element={isAuthenticated ? <ChatList /> : <Navigate to="/login" />}
           />
-          {currentPage === 'dialog' && selectedChat && (
-            <Route
-              path={`/chats/${selectedChat.id}`}
-              element={
-                isAuthenticated ? (
-                  <Dialog chat={selectedChat} goBack={goBack} />
-                ) : (
-                  <Navigate to="/login" />
-                )
-              }
-            />
-          )}
+
+          <Route
+            path="/chats/:chatId"
+            element={isAuthenticated ? <Dialog /> : <Navigate to="/login" />}
+          />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
