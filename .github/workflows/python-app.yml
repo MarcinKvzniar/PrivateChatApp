@@ -36,8 +36,8 @@ jobs:
         pwd
         echo $DJANGO_SETTINGS_MODULE
     - name: Test with pytest
-      run: |
-        pytest -vv Backend
+      working-directory: ./Backend
+      run: pytest -vv
 
 
         
