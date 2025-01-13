@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "main", "be_develop", "frontend_develop" ]
+    branches: [ "main", "be_develop", "fe_develop" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main","be_develop", "fe_develop" ]
 
 permissions:
   contents: read
@@ -30,4 +30,5 @@ jobs:
         if [ -f Backend/requirements.txt ]; then pip install -r Backend/requirements.txt; fi
     - name: Test with pytest
       run: |
-        pytest Backend
+        cd Backend
+        pytest 
