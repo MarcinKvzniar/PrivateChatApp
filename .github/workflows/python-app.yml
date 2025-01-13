@@ -28,13 +28,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f Backend/requirements.txt ]; then pip install -r Backend/requirements.txt; fi
-    - name: set env variable for pytest
-      run: echo "DJANGO_SETTINGS_MODULE=Backend.backend.settings" >> $GITHUB_ENV
+
     - name: Check django settings location from current dir
       run: | 
         ls
         pwd
-        echo $DJANGO_SETTINGS_MODULE
     - name: Test with pytest
       working-directory: ./Backend
       run: pytest -vv
