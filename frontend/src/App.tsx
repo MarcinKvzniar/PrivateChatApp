@@ -8,6 +8,7 @@ import NotFoundPage from './NotFoundPage';
 import ChatList from './chats/ChatList';
 import Dialog from './chats/Dialog';
 import Invite from './chats/Invite';
+import CreateRoom from './chats/CreateRoom';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<'chatList' | 'dialog'>(
@@ -44,6 +45,13 @@ const App: React.FC = () => {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/invite" element={<Invite />} />
+
+          <Route
+            path="/create-room"
+            element={
+              isAuthenticated ? <CreateRoom /> : <Navigate to="/login" />
+            }
+          />
 
           <Route
             path="/chats"
