@@ -2,7 +2,7 @@
 author: Dominik Cedro
 """
 from django.urls import path
-from .views import ChatListCreateView, MessageListCreateView, AddMemberView, AvailableChatsView, ChatRoomCreateView
+from .views import ChatListCreateView, MessageListCreateView, AddMemberView, AvailableChatsView, ChatRoomCreateView, UserChatsView
 
 
 urlpatterns = [

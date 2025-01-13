@@ -10,7 +10,7 @@ type Chat = {
 const ChatList = ({ openChat }: { openChat: (chat: Chat) => void }) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Hook to navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -32,7 +32,6 @@ const ChatList = ({ openChat }: { openChat: (chat: Chat) => void }) => {
           );
           setChats(response.data);
         } catch (err: any) {
-          // If token is invalid/expired, attempt to refresh it
           if (err.response && err.response.status === 401) {
             const refreshToken = localStorage.getItem('refresh_token');
             if (!refreshToken) {
@@ -50,8 +49,6 @@ const ChatList = ({ openChat }: { openChat: (chat: Chat) => void }) => {
 
             if (token) {
               localStorage.setItem('access_token', token);
-
-              // Retry fetching the chats with the new token
               const retryResponse = await axios.get(
                 'http://localhost:8000/api/chats/available/',
                 {
@@ -77,26 +74,24 @@ const ChatList = ({ openChat }: { openChat: (chat: Chat) => void }) => {
     fetchChats();
   }, []);
 
-  // Navigate to invite page
-  const handleInviteClick = () => {
-    navigate('/invite');
-  };
-
   return (
     <div>
       <h1>Chats</h1>
       {error && <p>{error}</p>}
       <ul>
         {chats.map((chat) => (
-          <li key={chat.chat_id} onClick={() => openChat(chat)}>
+          <li
+            key={chat.chat_id}
+            onClick={() => navigate(`/chat/${chat.chat_id}`)}
+          >
             {chat.chat_name}
           </li>
         ))}
       </ul>
-      <button className="invite-button" onClick={handleInviteClick}>
+      <button className="invite-button" onClick={() => navigate('/invite')}>
         Invitations
-      </button>{' '}
-      {/* Invite Button */}
+      </button>
+      <button onClick={() => navigate('/create-room')}>Create Room</button>
     </div>
   );
 };
