@@ -5,7 +5,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "main", "be_develop", "fe_develop" ]
+    branches: [ "main", "be_develop", "fe_develop", "feature/chat-web-socket-join" ]
   pull_request:
     branches: [ "main","be_develop", "fe_develop" ]
 
@@ -29,10 +29,10 @@ jobs:
         pip install flake8 pytest
         if [ -f Backend/requirements.txt ]; then pip install -r Backend/requirements.txt; fi
     - name: set env variable for pytest
-      run: echo "DJANGO_SETTINGS_MODULE=Backend.backend.settings" >> $GITHUB_ENV
+      run: echo "DJANGO_SETTINGS_MODULE=PrivateChatApp.Backend.backend.settings" >> $GITHUB_ENV
 
     - name: Test with pytest
-      working-directory: ./Backend
+      working-directory: PrivateChatApp/Backend
       run: |
         pytest 
         

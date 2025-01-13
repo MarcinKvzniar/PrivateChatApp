@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Chat(models.Model):
-    chat_id = models.AutoField(primary_key=True)
+    chat_id = models.AutoField(primary_key=True, unique=True) # this will be used to create unique chat room id==name
     chat_name = models.CharField(max_length=255)
     creator = models.ForeignKey(User, related_name='created_chats', on_delete=models.CASCADE, default=None)
     members = models.ManyToManyField(User, related_name='chats')
