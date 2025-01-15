@@ -27,3 +27,12 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['message_id', 'chat', 'sender', 'content', 'sent_at']
+
+
+from rest_framework import serializers
+from .models import ChatRoom
+
+class ChatRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatRoom
+        fields = ['id', 'name', 'creator', 'members', 'created_at']

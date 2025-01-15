@@ -99,8 +99,8 @@ class AvailableChatsView(APIView):
 
     def get(self, request):
         user = request.user
-        # chats = Chat.objects.filter(Q(creator=user) | Q(members=user))
-        chats = Chat.objects.filter(Q(creator=user)) # that depends if
+        chats = Chat.objects.filter(Q(creator=user) | Q(members=user))
+        # chats = Chat.objects.filter(Q(creator=user)) # that depends if
         serializer = ChatSerializer(chats, many=True)
         return Response(serializer.data)
 
@@ -112,7 +112,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import ChatRoom
-
+from .serializers import ChatRoomSerializer
 class ChatRoomCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -121,8 +121,19 @@ class ChatRoomCreateView(APIView):
         if not room_name:
             return Response({'error': 'Room name is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        chat_room, created = ChatRoom.objects.get_or_create(name=room_name, creator=request.user)
+        chat_room, created = ChatRoom.objects.get_or_create(
+            name=room_name,
+            creator=request.user
+        )
         if created:
+            chat_room.members.add(request.user)
+            chat_room.save()
             return Response({'message': 'Chat room created successfully'}, status=status.HTTP_201_CREATED)
         else:
             return Response({'message': 'Chat room already exists'}, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        user = request.user
+        chat_rooms = ChatRoom.objects.filter(Q(members=user))
+        serializer = ChatRoomSerializer(chat_rooms, many=True)
+        return Response(serializer.data)
