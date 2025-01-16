@@ -2,6 +2,18 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    """
+    ChatConsumer is an asynchronous WebSocket consumer that handles WebSocket connections for a chat application.
+    Methods:
+        connect(self):
+            Called when a WebSocket connection is established. Joins the user to a chat room group.
+        disconnect(self, close_code):
+            Called when the WebSocket connection is closed. Removes the user from the chat room group.
+        receive(self, text_data):
+            Called when a message is received from the WebSocket. Broadcasts the message to the chat room group.
+        chat_message(self, event):
+            Called when a message is received from the chat room group. Sends the message to the WebSocket.
+    """
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = f'chat_{self.room_name}'
