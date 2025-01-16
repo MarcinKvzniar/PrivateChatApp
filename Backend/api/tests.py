@@ -5,17 +5,18 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 
+
 @pytest.mark.django_db
 def test_create_user_view():
     client = APIClient()
-    url = reverse('register') 
+    url = reverse('register')
     data = {
-        'username': 'testuser',
-        'password': 'testpassword'
+        'username': 'testuser1',
+        'password': 'testpassword1!1112',
     }
     response = client.post(url, data, format='json')
     assert response.status_code == status.HTTP_201_CREATED
-    assert User.objects.filter(username='testuser').exists()
+    assert User.objects.filter(username='testuser1').exists()
 
 @pytest.mark.django_db
 def test_login_view():
