@@ -20,6 +20,9 @@ class Chat(models.Model):
     members = models.ManyToManyField(User, related_name='chats')
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        app_label = 'chat'
+
 class Message(models.Model):
     """
     Represents a message in a chat.
@@ -36,6 +39,9 @@ class Message(models.Model):
     content = models.TextField()
     sent_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        app_label = 'chat'
+
 class ChatRoom(models.Model):
     """
     Represents a chat room in the application.
@@ -51,6 +57,9 @@ class ChatRoom(models.Model):
     creator = models.ForeignKey(User, related_name='created_chat_rooms', on_delete=models.CASCADE)
     members = models.ManyToManyField(User, related_name='chat_rooms')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = 'chat'
 
     def __str__(self):
         return self.name
