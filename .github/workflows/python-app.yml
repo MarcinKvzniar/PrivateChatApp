@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main", "be_develop", "fe_develop" ]
   pull_request:
-    branches: [ "main","be_develop", "fe_develop" ]
+    branches: [ "main", "be_develop", "fe_develop" ]
 
 permissions:
   contents: read
@@ -26,13 +26,14 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
-
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -41,12 +42,11 @@ jobs:
         
     - name: set env variable for pytest
       run: echo "DJANGO_SETTINGS_MODULE=backend.settings" >> $GITHUB_ENV
-
+      
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
-
+      
     - name: Test with pytest
-    
       working-directory: ./Backend
       env:
         DB_USER: postgres
