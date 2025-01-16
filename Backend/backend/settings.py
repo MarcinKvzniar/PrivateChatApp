@@ -24,6 +24,8 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 INSTALLED_APPS = [
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'friendship_module',
     'django_extensions',
     'channels',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
