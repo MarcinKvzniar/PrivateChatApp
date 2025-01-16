@@ -23,11 +23,18 @@ def current_user(request):
 
 class FriendInvitationView(APIView):
     """
-    Send or respond to a friend invitation.
+    View to handle friend invitations.
+    Methods
+    -------
+    post(request):
+        Send a friend invitation to another user.
+    put(request):
+        Respond to a friend invitation with an answer.
+    patch(request):
+        Accept or reject a friend invitation.
     """
     permission_classes = [IsAuthenticated]
 
-    # Create a new friend invitation
     def post(self, request):
         receiver_username = request.data.get('receiver_username')
         question = request.data.get('question')
@@ -63,7 +70,6 @@ class FriendInvitationView(APIView):
 
         return Response({'detail': 'Invalid data.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Respond to a friend invitation
     def put(self, request):
         invitation_id = request.data.get('invitation_id')
         receiver_answer = request.data.get('answer')
@@ -85,7 +91,6 @@ class FriendInvitationView(APIView):
 
         return Response({'detail': 'Invalid request data.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Accept or reject a friend invitation
     def patch(self, request):
         invitation_id = request.data.get('invitation_id')
         action = request.data.get('action')
@@ -118,6 +123,16 @@ class FriendInvitationView(APIView):
 
 
 class PendingInvitationsView(APIView):
+    """
+    PendingInvitationsView handles the retrieval of pending friend invitations for the authenticated user.
+    Attributes:
+        permission_classes (list): List of permission classes that the view requires.
+    Methods:
+        get(request):
+            Retrieves the pending friend invitations received and sent by the authenticated user.
+            Returns a serialized response containing the combined list of invitations.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -129,6 +144,17 @@ class PendingInvitationsView(APIView):
 
 
 class AvailableFriendshipsView(APIView):
+    """
+    View to retrieve available friendships for the authenticated user.
+    This view inherits from APIView and requires the user to be authenticated.
+    It handles GET requests to fetch all friendships where the authenticated user
+    is either user1 or user2.
+    Methods:
+        get(request):
+            Retrieves and returns a list of friendships for the authenticated user.
+            The friendships are serialized using the FriendshipSerializer.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request):

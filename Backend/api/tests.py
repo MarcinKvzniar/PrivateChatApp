@@ -8,7 +8,7 @@ from rest_framework import status
 @pytest.mark.django_db
 def test_create_user_view():
     client = APIClient()
-    url = reverse('register')  # Update to match the correct URL pattern name
+    url = reverse('register') 
     data = {
         'username': 'testuser',
         'password': 'testpassword'
@@ -31,7 +31,6 @@ def test_login_view():
     assert 'access' in response.data
     assert 'refresh' in response.data
 
-    # Test invalid login
     data = {
         'username': 'testuser',
         'password': 'wrongpassword'
@@ -46,7 +45,6 @@ def test_token_refresh():
     user = User.objects.create_user(username='testuser', password='testpassword')
     client = APIClient()
 
-    # Obtain token
     url = reverse('get_token')
     data = {
         'username': 'testuser',
@@ -59,7 +57,6 @@ def test_token_refresh():
 
     refresh_token = response.data['refresh']
 
-    # Refresh token
     url = reverse('refresh')
     data = {
         'refresh': refresh_token
