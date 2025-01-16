@@ -14,7 +14,7 @@ class Chat(models.Model):
         members (QuerySet[User]): The users who are members of the chat.
         created_at (datetime): The date and time when the chat was created.
     """
-    chat_id = models.AutoField(primary_key=True)
+    chat_id = models.AutoField(primary_key=True, unique=True)
     chat_name = models.CharField(max_length=255)
     creator = models.ForeignKey(User, related_name='created_chats', on_delete=models.CASCADE, default=None)
     members = models.ManyToManyField(User, related_name='chats')
