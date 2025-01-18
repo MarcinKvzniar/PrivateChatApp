@@ -122,7 +122,7 @@ class AvailableChatsView(APIView):
 
     def get(self, request):
         user = request.user
-        chats = Chat.objects.filter(Q(creator=user) | Q(members=user))
+        chats = Chat.objects.filter(Q(members=user))
         # chats = Chat.objects.filter(Q(creator=user)) # that depends if
         serializer = ChatSerializer(chats, many=True)
         return Response(serializer.data)
