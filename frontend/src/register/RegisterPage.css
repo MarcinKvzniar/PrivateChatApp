@@ -2,87 +2,163 @@ body {
   background-color: #121212;
   color: white;
   font-family: 'Arial', sans-serif;
+  margin: 0;
+  height: 95vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.page-container {
+  display: flex;
+  width: 275%;
+  height: 100vh;
+}
+.left-section {
+  flex: 1;
+  background: url('./background-image.jpg') no-repeat center center;
+  background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
+  padding: 0;
+}
+
+.right-section {
+  flex: 1;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.squares-container {
+  position: relative;
+  width: 90%;
+  max-width: 700px;
+  height: 400px;
+}
+
+.square {
+  position: absolute;
+  width: calc(50% - 20px);
+  height: 150px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid #444;
+  border-radius: 8px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  padding: 10px;
+  animation: moveCircle 4s linear infinite;
+}
+
+.square:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.square:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.square:nth-child(3) {
+  animation-delay: 2s;
+}
+
+.square:nth-child(4) {
+  animation-delay: 3s;
+}
+
+@keyframes moveCircle {
+  0% {
+    top: 0;
+    left: 0;
+  }
+  25% {
+    top: 0;
+    left: calc(50% + 10px);
+  }
+  50% {
+    top: 250px;
+    left: calc(50% + 10px);
+  }
+  75% {
+    top: 250px;
+    left: 0;
+  }
+  100% {
+    top: 0;
+    left: 0;
+  }
 }
 
 .login-container {
-  background-color: #1f1f1f;
+  background-color: rgba(0, 0, 0, 0.8);
   padding: 40px;
-  border-radius: 8px;
-  width: 300px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
   text-align: center;
 }
 
 .login-title {
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
+  color: #a171f3;
 }
 
 .input-field {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
+  padding: 15px;
+  margin: 15px 0;
   background-color: #333;
   border: 1px solid #444;
   color: white;
-  border-radius: 4px;
+  border-radius: 25px;
+  font-size: 18px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-
-.links {
-  margin-top: 20px;
-}
-
-.register-link,
-.forgot-password-link {
-  color: #ccc;
-  text-decoration: none;
-  font-size: 14px;
-  display: block;
-  margin-bottom: 10px;
-}
-
-.register-link:hover,
-.forgot-password-link:hover {
-  text-decoration: underline;
+.input-field:focus {
+  border-color: #6a6afc;
+  box-shadow: 0 0 8px rgba(106, 106, 252, 0.5);
 }
 
 .login-button {
   background: linear-gradient(45deg, #0721c9db, #95c4edc8);
-  padding: 12px 24px;
+  padding: 15px;
+  width: 100%;
   color: white;
+  font-size: 18px;
+  font-weight: bold;
   border: none;
-  border-radius: 30px;
+  border-radius: 25px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  font-size: 16px;
-  background-size: 400% 400%;
-  animation: gradientMove 5s ease infinite;
-  opacity: 0.9;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .login-button:hover {
   background: linear-gradient(45deg, #033bb572);
-  opacity: 1;
+  transform: scale(1.05);
 }
 
-@keyframes gradientMove {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.links {
+  margin-top: 20px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.links a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
 }
