@@ -8,6 +8,7 @@
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
+- [Instruction](#instruction)
 
 ---
 
@@ -41,3 +42,7 @@
 - **Security**: Libsodium, PyNaCl for encryption, HTTPS/TLS 1.3 for secure transport
 - **Infrastructure**: tbd
 - **Push Notifications**: tbd
+
+## Instruction
+- backend requires active Postgres server with database 'private_chat_app' available at port 5432. User should be defined and specified in .env file. After installing requirements daphne server should be ran on localhost port 8000.
+- frontend should be started with npm start from frontend folder.
