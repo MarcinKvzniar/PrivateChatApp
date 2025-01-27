@@ -53,7 +53,7 @@ body {
   font-weight: bold;
   color: white;
   padding: 10px;
-  animation: moveCircle 4s linear infinite;
+  animation: moveCircle 10s linear infinite;
 }
 
 .square:nth-child(1) {
@@ -61,15 +61,15 @@ body {
 }
 
 .square:nth-child(2) {
-  animation-delay: 1s;
+  animation-delay: 2.5s;
 }
 
 .square:nth-child(3) {
-  animation-delay: 2s;
+  animation-delay: 5s;
 }
 
 .square:nth-child(4) {
-  animation-delay: 3s;
+  animation-delay: 7.5s;
 }
 
 @keyframes moveCircle {
